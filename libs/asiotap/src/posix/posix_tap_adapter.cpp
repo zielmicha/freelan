@@ -231,7 +231,7 @@ namespace asiotap
 		ec = boost::system::error_code();
 
 #if defined(LINUX)
-		const std::string dev_name = (layer() == tap_adapter_layer::ethernet) ? "/dev/net/tap" : "/dev/net/tun";
+        const std::string dev_name = "/dev/net/tun";
 
 		if (::access(dev_name.c_str(), F_OK) == -1)
 		{
@@ -305,13 +305,7 @@ namespace asiotap
 
 			netifr.ifr_qlen = 100; // 100 is the default value
 
-			if (::ioctl(socket.native_handle(), SIOCSIFTXQLEN, (void *)&netifr) < 0)
-			{
-				ec = boost::system::error_code(errno, boost::system::system_category());
-
-				return;
-			}
-
+            ::ioctl(socket.native_handle(), SIOCSIFTXQLEN, (void *)&netifr);
 			// Reset the structure for the next call.
 			netifr = {};
 
